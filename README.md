@@ -318,6 +318,43 @@ When `simulation=true` is requested:
 
 ---
 
+## Application and Interface Screenshots
+
+### Web Dashboard Interface
+
+#### 1. Primary Dashboard View
+Current conditions, alert banners, risk evaluation metrics, and primary trend visualizations.
+
+![Web Dashboard Primary View](images/web%20interface/Screenshot%202026-11-24%20014759.png)
+
+#### 2. Extended Forecast and Metrics View
+Daily temperature ranges, precipitation probabilities, and 24-hour hourly progressions.
+
+![Web Dashboard Extended View](images/web%20interface/Screenshot%202026-11-24%20014812.png)
+
+---
+
+### Repository and Deployment Verification
+
+The following captures document the GitHub repository structure, commit status, and online assets:
+
+#### Repository Header and Overview
+![GitHub Repository Overview](images/github/Screenshot%202026-11-24%20020638.png)
+
+#### Repository Structure and Technical Documentation Files
+![Repository File Tree Part 1](images/github/Screenshot%202026-11-24%20020655.png)
+
+![Repository File Tree Part 2](images/github/Screenshot%202026-11-24%20020711.png)
+
+#### Root Configuration and Source Code Organization
+![Repository File Tree Part 3](images/github/Screenshot%202026-11-24%20020723.png)
+
+![Repository File Tree Part 4](images/github/Screenshot%202026-11-24%20020738.png)
+
+![Repository File Tree Part 5](images/github/Screenshot%202026-11-24%20020749.png)
+
+---
+
 ## Security and Credential Management
 
 - Secret Hygiene: No private API keys or production tokens are hardcoded anywhere in the codebase.
