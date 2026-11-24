@@ -216,6 +216,21 @@ Weather-Forecast-Alert-Application/
 
 ---
 
+## Deployment on Streamlit Community Cloud
+
+The application is configured for deployment on Streamlit Community Cloud (share.streamlit.io):
+
+1. Sign in to Streamlit Community Cloud at https://share.streamlit.io using your GitHub credentials.
+2. Select "Create app" or "New app".
+3. Configure the deployment parameters:
+   - Repository: agarwalkratika26/weather-forecast-alert-application
+   - Branch: main
+   - Main file path: streamlit_app.py
+4. Click "Deploy".
+5. Streamlit Cloud automatically reads requirements.txt, provisions the Python environment, and launches the application with a public URL (for example: https://weather-forecast-alert-application.streamlit.app). When deployed in standalone cloud mode, the dashboard automatically utilizes the internal service layer, providing real-time Open-Meteo forecasts, alerts, and CSV exports.
+
+---
+
 ## API Reference
 
 The backend exposes five core HTTP endpoints:

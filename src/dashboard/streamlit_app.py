@@ -94,11 +94,23 @@ if "weather_result" not in st.session_state or refresh:
             st.session_state.weather_result = resp.json()
             st.session_state.fetch_error = None
     except requests.ConnectionError:
-        st.session_state.fetch_error = (
-            f"**Cannot reach the API server** at `{api_url}`.\n\n"
-            "Start the backend first:\n"
-            "```\npy -m uvicorn main:app --reload\n```"
-        )
+        # Graceful fallback for single-container / Streamlit Community Cloud deployments
+        try:
+            import asyncio
+            from src.weather_app.service import get_weather
+
+            with st.spinner("Connecting via internal weather service…"):
+                data = asyncio.run(
+                    get_weather(city=city, latitude=None, longitude=None, simulation=simulation)
+                )
+                st.session_state.weather_result = data
+                st.session_state.fetch_error = None
+        except Exception as fallback_exc:
+            st.session_state.fetch_error = (
+                f"**Cannot reach the API server** at `{api_url}` and direct fallback failed: {fallback_exc}\n\n"
+                "Start the backend locally with:\n"
+                "```\npy -m uvicorn main:app --reload\n```"
+            )
     except requests.Timeout:
         st.session_state.fetch_error = (
             "**Request timed out.** The backend is running but did not respond "
@@ -167,6 +179,8 @@ st.caption(
 col_report, _ = st.columns([1, 3])
 with col_report:
     if st.button("📄 Generate CSV report"):
+        report_bytes = None
+        safe_name = place["name"].replace(" ", "_")
         try:
             report_resp = requests.get(
                 f"{api_url}/weather/report",
@@ -174,15 +188,24 @@ with col_report:
                 timeout=25,
             )
             report_resp.raise_for_status()
-            safe_name = place["name"].replace(" ", "_")
+            report_bytes = report_resp.content
+        except requests.RequestException:
+            # Fallback to direct in-process report generation (Streamlit Cloud)
+            try:
+                from src.weather_app.service import save_csv_report
+                report_path = save_csv_report(st.session_state.weather_result)
+                with open(report_path, "rb") as fh:
+                    report_bytes = fh.read()
+            except Exception as report_exc:
+                st.error(f"Could not generate the CSV report: {report_exc}")
+
+        if report_bytes:
             st.download_button(
                 "⬇️ Download weather report",
-                data=report_resp.content,
+                data=report_bytes,
                 file_name=f"weather_report_{safe_name}.csv",
                 mime="text/csv",
             )
-        except requests.RequestException as exc:
-            st.error(f"Could not generate the CSV report: {exc}")
 
 # ---------------------------------------------------------------------------
 # Metric cards — 6 columns
